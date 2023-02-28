@@ -10,7 +10,7 @@ conn = psycopg2.connect(
 
 cur = conn.cursor()
 
-cur.execute("SELECT * FROM students")
+cur.execute("SELECT * FROM ip_ranges")
 rows = cur.fetchall()
 for row in rows:
     print(row)
