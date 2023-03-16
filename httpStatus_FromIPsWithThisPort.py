@@ -26,15 +26,10 @@ def getStatus(portid, ip, hostname, port, cur: psycopg2):
         http = 'https://'
     try:
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(f"{http}{hostname}:{port}", verify=False )
-        
+        response = requests.get(f"{http}{hostname}:{port}", verify=False )     
         http_status = response.status_code
-        query = "INSERT INTO port_info (port_id, checked, http_status) VALUES (%s, %s, %s)"
-        check = False
-        if http_status > 300:
-            check = True
-        print(f"{hostname}: {http_status}, {portid} {check} ")
-        values = (int(portid), check, int(http_status))
+        query = "INSERT INTO port_info (port_id,  http_status) VALUES (%s, %s)"
+        values = (int(portid), int(http_status))
         cur.execute(query, values)
         conn.commit()
         

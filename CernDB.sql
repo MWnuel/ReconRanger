@@ -1,3 +1,5 @@
+CREATE database cern;
+
 CREATE TABLE ip_ranges (
       	ip_range VARCHAR ( 50 ) UNIQUE PRIMARY KEY
 );
@@ -37,3 +39,12 @@ CREATE TABLE ports (
       	    REFERENCES ip(ip)
 );
 
+CREATE TABLE ports (
+      	id serial PRIMARY KEY,
+      	port_id INT NOT NULL,
+      	checked BOOLEAN,
+		http_statsu INT,
+      	other_infos VARCHAR(255),
+      	FOREIGN KEY (port_id)
+      	    REFERENCES pots(id)
+);

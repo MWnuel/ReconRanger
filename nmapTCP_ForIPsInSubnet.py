@@ -10,17 +10,16 @@ from futures3.thread import ThreadPoolExecutor
 #pip install futures3  --break-system-packages
 
 conn = psycopg2.connect(
-    host="x",
-    port='x',
+    host="IP",
+    port='PORT',
     database="cern",
-    user="x",
-    password="x"
+    user="USER",
+    password="PW"
 )
 
 def donmap(ip, cur: psycopg2):  
     nm = nmap.PortScanner()
     nm.scan(hosts=str(ip), arguments='-sS -sV -F -T5')
-    #nm.scan(hosts=str(ip), arguments='-sS -sV -F -sU -T5') with UDP 
     is_alive = False
     
     for host in nm.all_hosts():
@@ -70,29 +69,11 @@ def donmap(ip, cur: psycopg2):
                     query =  "UPDATE ports SET (port_state, service, version, extrainfo) = (%s,%s,%s,%s) where id = %s "
                     values = ( str(nm[host]['tcp'][port]['state']), '', '', '', id,)
                     cur.execute(query, values)
-                conn.commit()
-       
-#        if 'udp' in nm[host]:   
-#            for port in nm[host]['udp']:
-#                if nm[host]['udp'][port]['state'] == 'open':    
-#                    query = "INSERT INTO ports (ip, port_number, port_type, port_state, service, version, extrainfo) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-#                    values = (str(ip), int(port), 'udp', str(nm[host]['udp'][port]['state']), str(nm[host]['udp'][port]['name']), str(nm[host]['udp'][port]['product'] + nm[host]['udp'][port]['version']), str(nm[host]['udp'][port]['extrainfo']))
-#                    set_cur.execute(query, values)
-#                    conn.commit()
-#                    continue          
-#                query = "INSERT INTO ports (ip, port_number, port_type, port_state) VALUES (%s, %s, %s, %s)"
-#                values = (str(ip), int(port), 'udp', str(nm[host]['udp'][port]['state']))
-#                set_cur.execute(query, values)
-#                conn.commit()
-    
+                conn.commit()    
     query =  "UPDATE ip SET (is_alive,  last_check) = (%s,%s) where ip = %s "
     values = (is_alive, datetime.now(), ip, )
     cur.execute(query, values)
     conn.commit()
-
-   
-def PRINTE(string, set_cur: psycopg2):
-    print(string)
 
 def main(): #getting IPSubnet in args
     args = sys.argv[1:]
